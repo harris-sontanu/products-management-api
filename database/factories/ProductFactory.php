@@ -19,7 +19,7 @@ class ProductFactory extends Factory
     {
         return [
             'name'  => $this->faker->sentence(),
-            'price' => $this->faker->randomDigitNot(0) * 100,
+            'price' => $this->faker->randomFloat(2, 2, 900),
             'category_id' => Category::pluck('id')->random()
         ];
     }
