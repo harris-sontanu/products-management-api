@@ -19,6 +19,14 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
+    protected function validateRequest($request) {
+        return $request->validate([
+            'name' => 'required|min:5|max:255',
+            'price' => 'required|numeric|min:5',
+            'category_id' => 'required|exists:categories,id'
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -27,11 +35,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|min:5|max:255',
-            'price' => 'required|numeric|min:5',
-            'category_id' => 'required|exists:categories,id'
-        ]);
+        $validated = $this->validateRequest($request);
 
         $product = Product::create($validated);
         return new ProductResource($product);
@@ -55,9 +59,12 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        $validated = $this->validateRequest($request);
+
+        $product->update($validated);
+        return new ProductResource($product);
     }
 
     /**
